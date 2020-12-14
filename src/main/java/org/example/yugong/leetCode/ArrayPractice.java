@@ -13,33 +13,18 @@ public class ArrayPractice {
      * @return
      */
     public static int removeDuplicates(int[] nums) {
-
-//        标识重复数据放在那个位置
-        int duplicatesIndex = nums.length - 1;
-
-        for (int i = 0; i < duplicatesIndex; i++) {
-
-            for (int j = i + 1; j < duplicatesIndex + 1; j++) {
-
-                if (nums[i] == nums[j]) {
-                    int tem = nums[j];
-                    for (int k = j; k < duplicatesIndex ; k++) {
-                        nums[k] = nums[k + 1];
-                    }
-                    nums[duplicatesIndex] = tem;
-                    duplicatesIndex = duplicatesIndex - 1;
-//                    将指针回退一
-                    j = j - 1;
-                }
-
+        int i = 0;
+        for (int j = 1; j < nums.length; j++) {
+            if (nums[i] != nums[j]) {
+                i++;
+                nums[i] = nums[j];
             }
-
         }
-        return duplicatesIndex + 1;
+        return i + 1;
     }
 
     public static void main(String[] args) {
-        int i = removeDuplicates(new int[]{1, 1, 2});
+        int i = removeDuplicates(new int[]{0,0,1,1,1,2,2,3,3,4});
         System.out.println(i);
 
     }
