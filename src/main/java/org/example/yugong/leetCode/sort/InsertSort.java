@@ -33,7 +33,7 @@ public class InsertSort {
 
     public static void main(String[] args) {
         InsertSort insertSort = new InsertSort();
-        int[] sortArray = insertSort.sortArray(new int[]{5, 1, 1, 2, 0, 0});
+        int[] sortArray = insertSort.sortArray(new int[]{-1,2,-8,-10});
         for (int i = 0; i < sortArray.length; i++) {
             System.out.println(sortArray[i]);
         }
