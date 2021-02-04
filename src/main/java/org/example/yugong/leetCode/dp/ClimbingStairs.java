@@ -7,34 +7,21 @@ package org.example.yugong.leetCode.dp;
 public class ClimbingStairs {
 
     public int climbingStairs(int n) {
-        if(n<2){
-            return n;
+        if (n == 1) {
+            return 1;
         }
-
-
-        int remainder = n/2;
-        int module = n%2;
-        int count = 0;
-        int curRemainder = remainder;
-
-
-        do{
-            count = count +1;
-            curRemainder = curRemainder -1;
-            double pow = Math.pow(curRemainder, (remainder - curRemainder) * 2);
-            count = (int) (count + pow);
-
-        }while(curRemainder>0);
-
-        count = count + count*module*2;
-        count = count+1;
-        return count;
+        if (n == 2) {
+            return 2;
+        }
+        n = climbingStairs(n - 1) + climbingStairs(n - 2);
+        return n;
 
     }
 
     public static void main(String[] args) {
         ClimbingStairs climbingStairs = new ClimbingStairs();
-        System.out.println(climbingStairs.climbingStairs(3));
+        System.out.println(climbingStairs.climbingStairs(5));
+
     }
 
 
