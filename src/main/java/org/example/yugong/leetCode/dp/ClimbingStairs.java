@@ -74,6 +74,25 @@ public class ClimbingStairs {
         return dp[dp.length-1][0];
     }
 
+    /**
+     * 一次可以最多可以爬3个楼梯该怎么去设计
+     * f(n) = f(n-1) + f(n-2) + f(n-3)
+     *
+     */
+    public int climbingStairsForThree(int n) {
+
+        int[] dp = new int[n+1];
+        dp[1] = 1;
+        dp[2] = 2;
+        dp[3] = 4;
+
+        for (int i = 4; i < n + 1; i++) {
+            dp[i] = dp[i-1] + dp[i-2] + dp[i-3];
+        }
+        return dp[n];
+
+    }
+
 
     public static void main(String[] args) {
         ClimbingStairs climbingStairs = new ClimbingStairs();
@@ -81,6 +100,7 @@ public class ClimbingStairs {
 
         System.out.println(climbingStairs.climbingStairsLimit(10));
         System.out.println(climbingStairs.climbingStairsLimit2(10));
+        System.out.println(climbingStairs.climbingStairsForThree(7));
 
     }
 
