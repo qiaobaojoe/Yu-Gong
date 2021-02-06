@@ -10,39 +10,38 @@ public class LengthOfLIS {
 
     public int lengthOfLIS(int[] nums) {
 
-        int maxLength = 0;
+        int length = nums.length;
 
-        int size = nums.length;
+        if(length<2){
+            return  length;
+        }
 
-        for (int i = 0; i < size - 1; i++) {
+        int[] LISlength = new int[length];
+        LISlength[length -1] = 1;
 
-            int[] tem = new int[size];
-            int temSize = 0;
-
-            for (int j = i + 1; j < size; j++) {
-                if (nums[j] > nums[i]) {
-
-                    if (temSize == 0) {
-                        tem[temSize] = nums[j];
-                        temSize++;
-                    }
-                    if (nums[j] < tem[temSize]) {
-                        tem[temSize - 1] = nums[j];
-                    } else {
-                        tem[temSize] = nums[j];
-                        temSize++;
+        for(int i = length-2;i>=0;i--){
+            // 寻找  i~~n-1 区间内比 i大的值
+            int nextLISLength = 0;
+            for(int j = i+1;j<length;j++){
+                if(nums[i]<nums[j]){
+                    int tem = LISlength[j];
+                    if(tem>nextLISLength){
+                        nextLISLength = tem;
                     }
                 }
             }
-            if (temSize == 0) {
-                continue;
-            }
-            if (temSize > maxLength) {
-                maxLength = temSize;
+            LISlength[i] = nextLISLength +1;
+        }
+
+        int lengthOfLIS = 0;
+        for(int i = 0;i<length;i++){
+            if(LISlength[i]>lengthOfLIS){
+                lengthOfLIS = LISlength[i];
             }
         }
 
-        return maxLength;
+        return lengthOfLIS;
+
 
     }
 }
