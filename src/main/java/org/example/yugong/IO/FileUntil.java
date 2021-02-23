@@ -1,6 +1,7 @@
 package org.example.yugong.IO;
 
 import java.io.*;
+import java.net.URL;
 
 /**
  * @author qiaobao
@@ -57,11 +58,35 @@ public class FileUntil {
         bufferedReader.close();
     }
 
+
+    public static void testUrl() throws IOException {
+
+        URL url = new URL("http://www.baidu.com");
+
+        /* 字节流 */
+        InputStream is = url.openStream();
+
+        /* 字符流 */
+        InputStreamReader isr = new InputStreamReader(is, "utf-8");
+
+        /* 提供缓存功能 */
+        BufferedReader br = new BufferedReader(isr);
+
+        String line;
+        while ((line = br.readLine()) != null) {
+            System.out.println(line);
+        }
+
+        br.close();
+    }
+
+
     public static void main(String[] args) throws IOException {
 //        listAllFiles(new File("/Users/dasouche/Desktop/private-file"));
 
 //        copyFile("/Users/dasouche/Desktop/private-file/JavaIO-test-src/test","/Users/dasouche/Desktop/private-file/JavaIO-test-tar/test");
-        readFileContent("/Users/dasouche/Desktop/private-file/JavaIO-test-src/test");
+//        readFileContent("/Users/dasouche/Desktop/private-file/JavaIO-test-src/test");
+        testUrl();
 
     }
 
