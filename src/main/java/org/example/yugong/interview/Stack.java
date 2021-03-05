@@ -1,4 +1,4 @@
-package org.example.yugong;
+package org.example.yugong.interview;
 
 /**
  * @author qiaobao

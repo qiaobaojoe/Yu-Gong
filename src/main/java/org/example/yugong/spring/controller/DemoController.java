@@ -1,4 +1,4 @@
-package org.example.yugong.controller;
+package org.example.yugong.spring.controller;
 
 /**
  * @author qiaobao
