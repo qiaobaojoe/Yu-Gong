@@ -1,4 +1,4 @@
-package org.example.yugong.spring;
+package org.example.yugong.spring.config;
 
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;

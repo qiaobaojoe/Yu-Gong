@@ -3,12 +3,14 @@ package org.example.yugong;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
  * @author qiaobao
  * @since 2021-03-04
  */
 @SpringBootApplication
+@EnableAsync
 @ComponentScan(basePackages = "org.example.yugong.spring")
 public class Application {
 

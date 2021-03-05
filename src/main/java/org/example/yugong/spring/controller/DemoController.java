@@ -6,6 +6,7 @@ import org.example.yugong.spring.entity.User;
 import org.example.yugong.spring.event.UserRegisterPublisherService;
 import org.example.yugong.spring.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -27,10 +28,13 @@ public class DemoController {
 
     @ApiOperation("创建")
     @PostMapping("/user")
+    @Async()
     public void create(User user) {
         user.setUpdateTime(new Date());
         user.setCreateTime(new Date());
         userRegisterPublisherService.insert(user);
+        Thread thread = Thread.currentThread();
+        System.out.println("主线任务结束" + thread.getName());
     }
 
     @ApiOperation("查询全部")

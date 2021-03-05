@@ -1,4 +1,4 @@
-package org.example.yugong.spring;
+package org.example.yugong.spring.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
