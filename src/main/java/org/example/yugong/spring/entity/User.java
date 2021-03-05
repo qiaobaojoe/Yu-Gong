@@ -1,5 +1,7 @@
 package org.example.yugong.spring.entity;
 
+import io.swagger.annotations.ApiModel;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -10,6 +12,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "tbl_user")
+@ApiModel
 public class User {
 
     @Id
@@ -54,6 +57,14 @@ public class User {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     @Override
