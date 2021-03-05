@@ -3,6 +3,7 @@ package org.example.yugong.spring.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.example.yugong.spring.entity.User;
+import org.example.yugong.spring.event.UserRegisterPublisherService;
 import org.example.yugong.spring.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,12 +22,15 @@ public class DemoController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private UserRegisterPublisherService userRegisterPublisherService;
+
     @ApiOperation("创建")
     @PostMapping("/user")
     public void create(User user) {
         user.setUpdateTime(new Date());
         user.setCreateTime(new Date());
-        userRepository.save(user);
+        userRegisterPublisherService.insert(user);
     }
 
     @ApiOperation("查询全部")
