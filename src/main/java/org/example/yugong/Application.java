@@ -3,6 +3,7 @@ package org.example.yugong;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
@@ -11,6 +12,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
  */
 @SpringBootApplication
 @EnableAsync
+@EnableRetry
 @ComponentScan(basePackages = "org.example.yugong.spring")
 public class Application {
 
