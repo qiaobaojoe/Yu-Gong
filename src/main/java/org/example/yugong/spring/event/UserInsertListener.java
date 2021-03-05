@@ -4,7 +4,10 @@ import org.example.yugong.spring.entity.User;
 import org.example.yugong.spring.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.EventListener;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /**
  * @author qiaobao
@@ -12,12 +15,13 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-public class UserInsertListener implements ApplicationListener<UserRegisterEvent> {
+public class UserInsertListener {
 
     @Autowired
     private UserRepository userRepository;
 
-    @Override
+    @EventListener
+    @Order(2)
     public void onApplicationEvent(UserRegisterEvent event) {
         User user = event.getUser();
         userRepository.save(user);
