@@ -6,6 +6,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 /**
  * @author qiaobao
@@ -17,6 +18,7 @@ public class UserSmsListener{
     @EventListener
     @Order(1)
     @Async("userExecutorsPool")
+    @TransactionalEventListener()
     public void onApplicationEvent(UserRegisterEvent event) {
         String name = Thread.currentThread().getName();
         System.out.println("当前线程"+name);
