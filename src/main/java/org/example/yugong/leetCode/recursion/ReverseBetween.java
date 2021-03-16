@@ -2,7 +2,6 @@ package org.example.yugong.leetCode.recursion;
 
 import org.example.yugong.leetCode.ListNode;
 
-import java.awt.*;
 
 /**
  * @author qiaobao
@@ -19,28 +18,42 @@ public class ReverseBetween {
             return head;
         }
 
-        if (left == 1) {
-            return reverse(head, right);
-        }
+        int count = 0;
+        ListNode cur = head;
+        ListNode pre = null;
+        ListNode first = null;
+        ListNode reverseStart = null;
+        while (count < right) {
+            count++;
+            if (count < left) {
+                cur = cur.next;
+                continue;
+            }
+            if (count == left) {
+                first = pre;
+                pre = null;
+                reverseStart = cur;
+            }
+            if (count == right) {
+                break;
+            }
+            cur.next = pre;
+            pre = cur;
+            cur = cur.next;
 
-        head.next = reverseBetween(head.next, left - 1, right - 1);
+        }
+        ListNode next = cur.next;
+        cur.next = pre;
+        reverseStart.next = next;
+
+        if (first != null) {
+            first.next = cur;
+        } else {
+            return cur;
+        }
 
         return head;
     }
 
-//    1,2,3,4,5  2    3
-    public ListNode reverse(ListNode node,  int right) {
-        if (node.next == null) {
-            return node;
-        }
-        if (right == 1) {
-            return node;
-        }
-        ListNode cur = reverse(node.next, right - 1);
-        ListNode tem = node.next.next;
-        node.next.next = node;
-        node.next = tem;
-        return cur;
-    }
 
 }
