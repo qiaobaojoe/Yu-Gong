@@ -1,6 +1,6 @@
 package org.example.yugong.leetCode.recursion;
 
-import org.example.yugong.leetCode.ListNode;
+import org.example.yugong.leetCode.textExample.ListNode;
 
 
 /**
