@@ -23,3 +23,6 @@ target/
 /.idea/compiler.xml
 /Yu-Gong.iml
 /src/main/resources/application.yml
+将删除 src/main/java/org/example/yugong/spring/service/
+将删除 src/main/java/org/example/yugong/zookeeper/
+将删除 src/test/
