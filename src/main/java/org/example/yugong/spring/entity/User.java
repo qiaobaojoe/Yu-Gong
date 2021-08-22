@@ -1,9 +1,11 @@
 package org.example.yugong.spring.entity;
 
+import com.google.common.collect.Queues;
 import io.swagger.annotations.ApiModel;
+import sun.plugin.javascript.navig.LinkArray;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.util.*;
 
 /**
  * @author qiaobao
@@ -26,6 +28,8 @@ public class User {
     private Date createTime;
 
     private Date updateTime;
+
+    private Stack stack;
 
     public String getName() {
         return name;
