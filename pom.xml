@@ -57,6 +57,12 @@
             <version>2.9.2</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel</artifactId>
+            <version>3.0.5</version>
+        </dependency>
+
 
 <!--        zookeeper-->
         <dependency>
@@ -73,6 +79,39 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
+
+<!--        单元测试框架-->
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>2.4.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.spockframework</groupId>
+            <artifactId>spock-core</artifactId>
+            <version>1.1-groovy-2.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.spockframework</groupId>
+            <artifactId>spock-spring</artifactId>
+            <version>1.1-groovy-2.4</version>
+        </dependency>
+        <dependency> <!-- enables mocking of classes (in addition to interfaces) -->
+            <groupId>cglib</groupId>
+            <artifactId>cglib-nodep</artifactId>
+            <version>3.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <!-- enables mocking of classes without default constructor (together with
+CGLIB) -->
+            <groupId>org.objenesis</groupId>
+            <artifactId>objenesis</artifactId>
+            <version>2.1</version>
+            <scope>test</scope>
+        </dependency>
+
 
     </dependencies>
 
