@@ -1,7 +1,6 @@
 package org.example.yugong.event;
 
-import com.google.common.collect.Lists;
-
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,7 +10,7 @@ import java.util.List;
 public class Action {
 
     public static List<DoorListener> getAllListener() {
-        List<DoorListener> list = Lists.newArrayList();
+        List<DoorListener> list = new ArrayList<>();
         list.add(new OpenDoorListener());
         list.add(new CloseDoorListener());
         return list;
