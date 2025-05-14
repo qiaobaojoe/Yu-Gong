@@ -15,7 +15,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableAsync
 @EnableRetry
 @EnableAspectJAutoProxy
-@ComponentScan(basePackages = "org.example.yugong")
 public class Application {
 
     public static void main(String[] args) throws Exception {
