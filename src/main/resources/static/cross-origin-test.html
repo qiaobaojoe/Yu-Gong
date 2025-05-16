@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>跨域请求测试</title>
+</head>
+<body>
+    <h1>跨域请求测试</h1>
+    <div id="result"></div>
+
+    <script>
+        // 这里使用不同域名的地址来测试跨域
+        const eventSource = new EventSource('http://localhost:8080/api/basketball/live');
+
+        eventSource.addEventListener('score', function(e) {
+            const score = JSON.parse(e.data);
+            document.getElementById('result').innerHTML += `
+                <p>收到比分更新：${score.homeTeam} ${score.homeScore} - ${score.awayScore} ${score.awayTeam}</p>
+            `;
+        });
+
+        eventSource.addEventListener('comment', function(e) {
+            const comment = JSON.parse(e.data);
+            document.getElementById('result').innerHTML += `
+                <p>收到评论：${comment.username} - ${comment.content}</p>
+            `;
+        });
+
+        eventSource.onerror = function(e) {
+            console.error('SSE 连接错误:', e);
+            document.getElementById('result').innerHTML += '<p style="color: red;">连接错误</p>';
+        };
+    </script>
+</body>
+</html>
