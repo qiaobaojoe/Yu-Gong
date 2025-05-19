@@ -96,6 +96,11 @@ CGLIB) -->
             <version>30.1.1-jre</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.caucho</groupId>
+            <artifactId>hessian</artifactId>
+            <version>4.0.65</version>
+        </dependency>
 
 
     </dependencies>
