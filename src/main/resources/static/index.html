@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>消息通知系统</title>
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        .container {
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+        }
+        .users-panel {
+            width: 200px;
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+        .messages-panel {
+            flex-grow: 1;
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+        .message {
+            border: 1px solid #ddd;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .message.unread {
+            background-color: #f0f0f0;
+        }
+        .user-item {
+            padding: 5px;
+            cursor: pointer;
+        }
+        .user-item.selected {
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        function App() {
+            const [userId, setUserId] = React.useState(null);
+            const [messages, setMessages] = React.useState([]);
+            const [onlineUsers, setOnlineUsers] = React.useState([]);
+            const [selectedUser, setSelectedUser] = React.useState(null);
+            const [newMessage, setNewMessage] = React.useState('');
+
+            React.useEffect(() => {
+                // 创建新用户
+                axios.post('http://localhost:8080/api/messages/users')
+                    .then(response => setUserId(response.data));
+
+                // 清理函数：用户离开时从在线列表中移除
+                return () => {
+                    if (userId) {
+                        axios.delete(`http://localhost:8080/api/messages/users/${userId}`);
+                    }
+                };
+            }, []);
+
+            React.useEffect(() => {
+                if (!userId) return;
+
+                // 轮询消息
+                const messageInterval = setInterval(() => {
+                    axios.get(`http://localhost:8080/api/messages/${userId}`)
+                        .then(response => setMessages(response.data));
+                }, 1000);
+
+                // 轮询在线用户
+                const userInterval = setInterval(() => {
+                    axios.get('http://localhost:8080/api/messages/users')
+                        .then(response => setOnlineUsers(response.data));
+                }, 1000);
+
+                return () => {
+                    clearInterval(messageInterval);
+                    clearInterval(userInterval);
+                };
+            }, [userId]);
+
+            const handleMessageClick = (message) => {
+                if (!message.read) {
+                    axios.post(`http://localhost:8080/api/messages/${userId}/messages/${message.id}`);
+                }
+            };
+
+            const handleSendMessage = (e) => {
+                e.preventDefault();
+                if (!selectedUser || !newMessage.trim()) return;
+
+                axios.post(
+                    `http://localhost:8080/api/messages/${userId}/send/${selectedUser.id}`,
+                    newMessage
+                ).then(() => setNewMessage(''));
+            };
+
+            const formatTime = (timestamp) => {
+                return new Date(timestamp).toLocaleString();
+            };
+
+            if (!userId) return <div>加载中...</div>;
+
+            return (
+                <div className="container">
+                    <div className="users-panel">
+                        <h2>在线用户</h2>
+                        {onlineUsers.map(user => (
+                            <div
+                                key={user.id}
+                                className={`user-item ${selectedUser?.id === user.id ? 'selected' : ''}`}
+                                onClick={() => setSelectedUser(user)}
+                            >
+                                {user.name}
+                            </div>
+                        ))}
+                    </div>
+                    <div className="messages-panel">
+                        <h2>消息列表</h2>
+                        <div>
+                            <form onSubmit={handleSendMessage}>
+                                <input
+                                    type="text"
+                                    value={newMessage}
+                                    onChange={e => setNewMessage(e.target.value)}
+                                    placeholder={selectedUser ? `发送给 ${selectedUser.name}` : '请先选择用户'}
+                                    disabled={!selectedUser}
+                                />
+                                <button type="submit" disabled={!selectedUser}>发送</button>
+                            </form>
+                        </div>
+                        {messages.map(message => (
+                            <div
+                                key={message.id}
+                                className={`message ${!message.read ? 'unread' : ''}`}
+                                onClick={() => handleMessageClick(message)}
+                            >
+                                <div>{message.content}</div>
+                                <div style={{fontSize: 'small', color: '#666'}}>
+                                    {formatTime(message.timestamp)}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
