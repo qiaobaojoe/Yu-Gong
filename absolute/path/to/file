@@ -1,0 +1,8 @@
+// ... existing code ...
+                <div className="users-panel">
+                    <h2>在线用户</h2>
+                    <div style={{marginBottom: '10px', fontSize: 'small', color: '#666'}}>
+                        当前用户ID: {userId}
+                    </div>
+                    {onlineUsers.map(user => (
+// ... existing code ...

@@ -51,71 +51,83 @@
             const [onlineUsers, setOnlineUsers] = React.useState([]);
             const [selectedUser, setSelectedUser] = React.useState(null);
             const [newMessage, setNewMessage] = React.useState('');
-
+            const userIdRef = React.useRef(null);
+        
             React.useEffect(() => {
                 // 创建新用户
                 axios.post('http://localhost:8080/api/messages/users')
-                    .then(response => setUserId(response.data));
-
+                    .then(response => {
+                        setUserId(response.data);
+                        userIdRef.current = response.data;
+                    });
+        
                 // 清理函数：用户离开时从在线列表中移除
                 return () => {
-                    if (userId) {
-                        axios.delete(`http://localhost:8080/api/messages/users/${userId}`);
+                    if (userIdRef.current) {
+                        axios.delete(`http://localhost:8080/api/messages/users/${userIdRef.current}`);
                     }
                 };
             }, []);
-
+        
             React.useEffect(() => {
                 if (!userId) return;
-
+        
                 // 轮询消息
                 const messageInterval = setInterval(() => {
                     axios.get(`http://localhost:8080/api/messages/${userId}`)
                         .then(response => setMessages(response.data));
                 }, 1000);
-
+        
                 // 轮询在线用户
                 const userInterval = setInterval(() => {
                     axios.get('http://localhost:8080/api/messages/users')
                         .then(response => setOnlineUsers(response.data));
                 }, 1000);
-
+        
                 return () => {
                     clearInterval(messageInterval);
                     clearInterval(userInterval);
                 };
             }, [userId]);
-
+        
             const handleMessageClick = (message) => {
                 if (!message.read) {
                     axios.post(`http://localhost:8080/api/messages/${userId}/messages/${message.id}`);
                 }
             };
-
+        
             const handleSendMessage = (e) => {
                 e.preventDefault();
                 if (!selectedUser || !newMessage.trim()) return;
-
+        
                 axios.post(
                     `http://localhost:8080/api/messages/${userId}/send/${selectedUser.id}`,
-                    newMessage
+                    newMessage,
+                    {
+                        headers: {
+                            'Content-Type': 'text/plain'
+                        }
+                    }
                 ).then(() => setNewMessage(''));
             };
-
+        
             const formatTime = (timestamp) => {
                 return new Date(timestamp).toLocaleString();
             };
-
+        
             if (!userId) return <div>加载中...</div>;
-
+        
             return (
                 <div className="container">
                     <div className="users-panel">
                         <h2>在线用户</h2>
+                        <div style={{marginBottom: '10px', fontSize: 'small', color: '#666'}}>
+                            当前用户ID: {userId}
+                        </div>
                         {onlineUsers.map(user => (
                             <div
                                 key={user.id}
-                                className={`user-item ${selectedUser?.id === user.id ? 'selected' : ''}`}
+                                className={`user-item ${selectedUser && selectedUser.id === user.id ? 'selected' : ''}`}
                                 onClick={() => setSelectedUser(user)}
                             >
                                 {user.name}
@@ -144,7 +156,7 @@
                             >
                                 <div>{message.content}</div>
                                 <div style={{fontSize: 'small', color: '#666'}}>
-                                    {formatTime(message.timestamp)}
+                                    {formatTime(message.createTime)}
                                 </div>
                             </div>
                         ))}
