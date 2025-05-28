@@ -72,20 +72,29 @@
             React.useEffect(() => {
                 if (!userId) return;
         
-                // 轮询消息
-                const messageInterval = setInterval(() => {
-                    axios.get(`http://localhost:8080/api/messages/${userId}`)
-                        .then(response => setMessages(response.data));
-                }, 1000);
+                // 长轮询消息
+                const pollMessages = async () => {
+                    try {
+                        const response = await axios.get(`http://localhost:8080/api/messages/${userId}`);
+                        setMessages(response.data);
+                        // 立即发起下一次请求
+                        pollMessages();
+                    } catch (error) {
+                        // 如果请求失败，等待一秒后重试
+                        setTimeout(pollMessages, 1000);
+                    }
+                };
         
-                // 轮询在线用户
+                // 启动长轮询
+                pollMessages();
+        
+                // 轮询在线用户（保持短轮询，因为需要定期更新）
                 const userInterval = setInterval(() => {
                     axios.get('http://localhost:8080/api/messages/users')
                         .then(response => setOnlineUsers(response.data));
                 }, 1000);
         
                 return () => {
-                    clearInterval(messageInterval);
                     clearInterval(userInterval);
                 };
             }, [userId]);

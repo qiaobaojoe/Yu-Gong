@@ -1,6 +1,9 @@
 package org.example.servernotify;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.async.DeferredResult;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,8 +30,24 @@ public class MessageController {
     }
 
     @GetMapping("/{userId}")
-    public List<Message> getMessages(@PathVariable Long userId) {
-        return pollingService.pollMessages(userId);
+    public DeferredResult<List<Message>> getMessages(@PathVariable Long userId) {
+        DeferredResult<List<Message>> deferredResult = new DeferredResult<>(30000L, new ArrayList<>());
+        
+        List<Message> messages = pollingService.pollMessages(userId);
+        if (!messages.isEmpty()) {
+            deferredResult.setResult(messages);
+            return deferredResult;
+        }
+        
+        // 如果没有新消息，将请求挂起
+        PollingContext context = new PollingContext(userId, deferredResult);
+        pollingService.addPollingContext(context);
+        
+        deferredResult.onCompletion(() -> {
+            pollingService.removePollingContext(context);
+        });
+        
+        return deferredResult;
     }
 
     @PostMapping("/{userId}/send/{targetUserId}")
