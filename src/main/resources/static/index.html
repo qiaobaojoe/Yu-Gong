@@ -52,6 +52,7 @@
             const [selectedUser, setSelectedUser] = React.useState(null);
             const [newMessage, setNewMessage] = React.useState('');
             const userIdRef = React.useRef(null);
+            const wsRef = React.useRef(null);
         
             React.useEffect(() => {
                 // 创建新用户
@@ -59,10 +60,26 @@
                     .then(response => {
                         setUserId(response.data);
                         userIdRef.current = response.data;
+                        // 创建WebSocket连接
+                        const ws = new WebSocket(`ws://localhost:8080/ws/messages?userId=${response.data}`);
+                        
+                        ws.onmessage = (event) => {
+                            const message = JSON.parse(event.data);
+                            setMessages(prev => [...prev, message]);
+                        };
+        
+                        ws.onclose = () => {
+                            console.log('WebSocket连接已关闭');
+                        };
+        
+                        wsRef.current = ws;
                     });
         
-                // 清理函数：用户离开时从在线列表中移除
+                // 清理函数
                 return () => {
+                    if (wsRef.current) {
+                        wsRef.current.close();
+                    }
                     if (userIdRef.current) {
                         axios.delete(`http://localhost:8080/api/messages/users/${userIdRef.current}`);
                     }
@@ -72,52 +89,28 @@
             React.useEffect(() => {
                 if (!userId) return;
         
-                // 长轮询消息
-                const pollMessages = async () => {
-                    try {
-                        const response = await axios.get(`http://localhost:8080/api/messages/${userId}`);
-                        setMessages(response.data);
-                        // 立即发起下一次请求
-                        pollMessages();
-                    } catch (error) {
-                        // 如果请求失败，等待一秒后重试
-                        setTimeout(pollMessages, 1000);
-                    }
-                };
-        
-                // 启动长轮询
-                pollMessages();
-        
-                // 轮询在线用户（保持短轮询，因为需要定期更新）
+                // 只保留在线用户的轮询
                 const userInterval = setInterval(() => {
                     axios.get('http://localhost:8080/api/messages/users')
                         .then(response => setOnlineUsers(response.data));
-                }, 1000);
+                }, 1000 * 10);
         
                 return () => {
                     clearInterval(userInterval);
                 };
             }, [userId]);
         
-            const handleMessageClick = (message) => {
-                if (!message.read) {
-                    axios.post(`http://localhost:8080/api/messages/${userId}/messages/${message.id}`);
-                }
-            };
-        
             const handleSendMessage = (e) => {
                 e.preventDefault();
-                if (!selectedUser || !newMessage.trim()) return;
+                if (!selectedUser || !newMessage.trim() || !wsRef.current) return;
         
-                axios.post(
-                    `http://localhost:8080/api/messages/${userId}/send/${selectedUser.id}`,
-                    newMessage,
-                    {
-                        headers: {
-                            'Content-Type': 'text/plain'
-                        }
-                    }
-                ).then(() => setNewMessage(''));
+                const message = {
+                    targetUserId: selectedUser.id,
+                    content: newMessage
+                };
+        
+                wsRef.current.send(JSON.stringify(message));
+                setNewMessage('');
             };
         
             const formatTime = (timestamp) => {
