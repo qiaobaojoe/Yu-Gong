@@ -3,6 +3,7 @@ package org.example.leetcode.june;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 /**
  * @author qiaobao
@@ -113,11 +114,72 @@ public class TwentyTwo {
         return 0;
     }
 
+    public int[][] highestPeak(int[][] isWater) {
+//      找到给出的矩阵里面所有的水域坐标  isWater[i][j] == 1 作为跟节点
+//        将根节点上下左右添加上带访问队列中
+//        处理节点 如果节点已经访问过 或则是 跟节点 不处理  否则  这个点面积就是  high + 1 （high是上次相邻的单元高度）
+//        并且将 当前将相关单元和当前高度，添加到下一次遍历
+//        y方向长度
+        int m = isWater.length;
+//        x方向长度
+        int n = isWater[0].length;
+        if (m == 1 && n == 1) {
+            return new int[][]{{0}};
+        }
+        int[][] ans = new int[m][n];
+        LinkedList<Coordinate> waitList = new LinkedList<>();
+        for (int x = 0; x < n; x++) {
+            for (int y = 0; y < m; y++) {
+                if (isWater[y][x] == 1) {
+//                    ans初始值已经为0，这里水域面积不用赋值，但是需要再原地图标记已访问过
+                    isWater[y][x] = -1;
+                    waitList.add(new Coordinate(x - 1, y, 0));
+                    waitList.add(new Coordinate(x + 1, y, 0));
+                    waitList.add(new Coordinate(x, y - 1, 0));
+                    waitList.add(new Coordinate(x, y + 1, 0));
+                }
+            }
+        }
+        while (!waitList.isEmpty()) {
+            Coordinate cur = waitList.remove();
+//            数组越界不处理
+            if (cur.x < 0 || cur.y < 0 || cur.x >= n || cur.y >= m) {
+                continue;
+            }
+//            已经访问过不处理
+            if (isWater[cur.y][cur.x] == -1) {
+                continue;
+            }
+//            剩余的结果就是没有计算面积的陆地
+            int high = cur.high + 1;
+            ans[cur.y][cur.x] = high;
+//            原地图标记访问
+            isWater[cur.y][cur.x] = -1;
+//            其他方向添加队列
+            waitList.add(new Coordinate(cur.x - 1, cur.y, high));
+            waitList.add(new Coordinate(cur.x + 1, cur.y, high));
+            waitList.add(new Coordinate(cur.x, cur.y - 1, high));
+            waitList.add(new Coordinate(cur.x, cur.y + 1, high));
+
+        }
+        return ans;
+    }
+
+    static class Coordinate {
+        int x;
+        int y;
+        int high;
+
+        public Coordinate(int x, int y, int high) {
+            this.x = x;
+            this.y = y;
+            this.high = high;
+        }
+    }
+
     public static void main(String[] args) {
         TwentyTwo twentyTwo = new TwentyTwo();
-        System.out.println(twentyTwo.largestArea(new String[]{
-                "11111100000","21243101111","21224101221","11111101111"
-        }));
+        System.out.println(twentyTwo.highestPeak(new int[][]{{0, 0, 1}, {1, 0, 0}, {0, 0, 0}}));
 
     }
 }
