@@ -1,18 +1,21 @@
 package org.example.semaphore.mq;
 
+import lombok.SneakyThrows;
+
 import java.util.ArrayDeque;
 
 /**
  * @author qiaobao
  * @since 2025/6/22
  */
-public class SynchronizeBlockQueue {
+public class SynchronizeBlockQueue implements MyQueue {
 
     private ArrayDeque<String> messageList = new ArrayDeque<>();
 
     private final Object semaphore = new Object();
 
 
+    @Override
     public void send(String message) {
         synchronized (semaphore) {
             boolean needNotify = messageList.isEmpty();
@@ -23,8 +26,10 @@ public class SynchronizeBlockQueue {
         }
     }
 
-    public String receive() throws InterruptedException {
-        synchronized (semaphore){
+    @SneakyThrows
+    @Override
+    public String receive() {
+        synchronized (semaphore) {
             while (messageList.isEmpty()) {
                 semaphore.wait();
             }
