@@ -1,5 +1,6 @@
 package org.example.leetcode.june;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -177,9 +178,41 @@ public class TwentyTwo {
         }
     }
 
-    public static void main(String[] args) {
-        TwentyTwo twentyTwo = new TwentyTwo();
-        System.out.println(twentyTwo.highestPeak(new int[][]{{0, 0, 1}, {1, 0, 0}, {0, 0, 0}}));
+    public int longestSubsequence(String s, int k) {
+        char[] charArray = s.toCharArray();
+        int n = charArray.length;
+        int ans = 0;
+        long val = 0;
 
+        int pos = 0;
+        // 从低位开始遍历
+        for (int i = n - 1; i >= 0; i--) {
+            if (charArray[i] == '0') {
+                ans++;
+            } else {
+                // 等于1的情况，就要判断 插入后的值 是否大于 k
+                if (val == -1) {
+                    continue;
+                }
+                long addVal = 1L << pos;
+                if ((val + addVal) > k) {
+                    //当前索引的1不能添加，同时后面的也不能添加
+                    val = -1;
+                } else {
+                    val += addVal;
+                    ans++;
+                }
+            }
+            pos++;
+        }
+
+        return ans;
+
+    }
+
+    public static void main(String[] args) {
+        System.out.println(1L << 32);
+        TwentyTwo twentyTwo = new TwentyTwo();
+        System.out.println(twentyTwo.longestSubsequence("000101010011011001011101111000111111100001011000000100010000111100000011111001000111100111101001111001011101001011011101001011011001111111010011100011110111010000010000010111001001111101100001111", 300429827));
     }
 }
