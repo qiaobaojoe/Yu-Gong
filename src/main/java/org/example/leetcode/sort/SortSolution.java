@@ -38,7 +38,11 @@ public class SortSolution {
     }
 
     public static void main(String[] args) {
-        SortSolution solution = new SortSolution();
-        solution.selectSort(new int[]{5, 1, 2, 3});
+//        SortSolution solution = new SortSolution();
+//        solution.selectSort(new int[]{5, 1, 2, 3});
+
+        int pow = (int) Math.pow(2, 6);
+        System.out.println( pow);
+
     }
 }

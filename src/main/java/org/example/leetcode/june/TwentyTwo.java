@@ -210,9 +210,61 @@ public class TwentyTwo {
 
     }
 
+    // 我的思路大致是合理，但是逆向的求出总数的思考，走不通，没有办法求出子集问题
+    // 这里在题目之外还有一个很好的优化思路是需要借鉴的
+    // 取余的计数设置为静态变量
+    // 2的平方，是可以通过迭代的方法快速算出来，保存数据，可以加速计算过程。这里结果也应该求取，不然超出Integer的范围了
+    public static final int MOD =  1000_000_007;
+    public int[] powTable;
+
+    private void initPowTable(int len){
+        powTable = new int[len+1];
+        powTable[0] = 1;
+        for (int i = 1 ;i <= len; i++){
+            powTable[i] = (powTable[i-1] * 2) % MOD;
+        }
+    }
+
+    public int numSubseq(int[] nums, int target) {
+        // 首先这里应该要对数组进行排序，应该是只返回数目，并没有要求递增或等差的关联关系
+        Arrays.sort(nums);
+        int n = nums.length;
+        // 这里我们反向的思路，讨论一下要排除的子序列情况
+        // 当前元素 x + minVal > target; 这个元素不能参加排序
+        int validLen = -1;
+        for (int i = n -1 ; i >= 0 ;i--){
+            if (nums[0] + nums[i] <= target){
+                validLen = i + 1;
+                break;
+            }
+        }
+        if (validLen == -1){
+            return 0;
+        }
+        initPowTable(validLen);
+        int left = 0;
+        int right = validLen -1;
+        int ans = 0;
+        while (left <= right){
+            if (nums[left] + nums[right] <= target){
+                // 选择nums[left]，[left + 1 ,right] 区间内的数字都是可选可不选的
+                ans += powTable[right - left];
+                ans %= MOD;
+                left++;
+            }else{
+                right--;
+            }
+        }
+        return ans % MOD;
+    }
+
+
     public static void main(String[] args) {
         System.out.println(1L << 32);
         TwentyTwo twentyTwo = new TwentyTwo();
-        System.out.println(twentyTwo.longestSubsequence("000101010011011001011101111000111111100001011000000100010000111100000011111001000111100111101001111001011101001011011101001011011001111111010011100011110111010000010000010111001001111101100001111", 300429827));
+        System.out.println(twentyTwo.numSubseq(
+                new int[]{14,4,6,6,20,8,5,6,8,12,6,10,14,9,17,16,9,7,14,11,14,15,13,11,10,18,13,17,17,14,17,7,9,5,10,13,8,5,18,20,7,5,5,15,19,14},
+                22
+        ));
     }
 }
