@@ -37,12 +37,51 @@ public class SortSolution {
         nums[i] = temp;
     }
 
-    public static void main(String[] args) {
-//        SortSolution solution = new SortSolution();
-//        solution.selectSort(new int[]{5, 1, 2, 3});
 
-        int pow = (int) Math.pow(2, 6);
-        System.out.println( pow);
+    public int[] insertSortArray(int[] nums) {
+        // 插入排序，这里比较麻烦的两点：
+        // 1.找到要插入的位置 2.数组的移动
+        int n = nums.length;
+        if (n == 1) {
+            return nums;
+        }
+        for (int i = 1; i < n; i++) {
+            // i 就是已经有序队列的长度，每一次都是最后一个元素参加排序
+            int insertIndex = findInsertIndex(nums, i, nums[n - 1]);
+            move(nums, insertIndex, nums[n - 1]);
+        }
+
+        return nums;
+    }
+
+    private int findInsertIndex(int[] nums, int i, int target) {
+        // 这里可以用二分查找优化
+        for (int j = 0; j < i; j++) {
+            if (nums[j] > target) {
+                return j;
+            }
+        }
+        return i;
+    }
+
+    private void move(int[] nums, int insertIndex, int target) {
+        int n = nums.length;
+        if (insertIndex == n - 1) {
+            // 要插入最后一个位置不需要移动
+            nums[insertIndex] = target;
+            return;
+        }
+        // 现将 from =  insertIndex + 1 向前挪动  to  = insertIndex + 1 +1 len = (nums.length - to)
+        int destPos = insertIndex + 1;
+        int len = n - destPos;
+        System.arraycopy(nums, insertIndex, nums, destPos, len);
+        nums[insertIndex] = target;
+    }
+
+    public static void main(String[] args) {
+        SortSolution solution = new SortSolution();
+        solution.insertSortArray(new int[]{5, 1, 2, 3});
+
 
     }
 }
