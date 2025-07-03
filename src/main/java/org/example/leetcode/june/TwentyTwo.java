@@ -258,13 +258,58 @@ public class TwentyTwo {
         return ans % MOD;
     }
 
+    /**
+     * dp中的经典，最长公共子序列问题，我最开始思路通过记录相同字符的索引，遍历处理，复杂度太高了，根本写不出来，这题的动态规划思路挺简单的
+     * i,j 分别代表 text1,text2的遍历下标
+     * if text1[i] == text2[j] 那么 dp[i][j] = dp[i-1][j-1] + 1
+     * else dp[i][j] = max(dp[i-1][j],dp[i][j-1])
+     * 就是这么简单
+     * 1 <= text1.length, text2.length <= 1000
+     * @param text1
+     * @param text2
+     * @return
+     */
+    //        处理成数组方便后续的访问
+    private char[] chars1;
+    private char[] chars2;
+
+//    memo[i][j] = res
+    private int[][] memo;
+    public int longestCommonSubsequence(String text1, String text2) {
+//        这里是递归的写法
+        chars1 = text1.toCharArray();
+        chars2 = text2.toCharArray();
+        int n = chars1.length;
+        int m = chars2.length;
+        memo = new int[n][m];
+        for (int i = 0; i < n; i++) {
+            Arrays.fill(memo[i], -1);
+        }
+        return dfs(n - 1, m - 1);
+    }
+
+    public int dfs(int i, int j) {
+        if (i < 0 || j < 0) {
+            return 0;
+        }
+        if (memo[i][j] != -1) {
+            return memo[i][j];
+        }
+        int ans = 0;
+        if (chars1[i] == chars2[j]) {
+            ans = dfs(i - 1, j - 1) + 1;
+        } else {
+            ans = Math.max(dfs(i - 1, j), dfs(i, j - 1));
+        }
+        memo[i][j] = ans;
+        return ans;
+    }
 
     public static void main(String[] args) {
         System.out.println(1L << 32);
         TwentyTwo twentyTwo = new TwentyTwo();
-        System.out.println(twentyTwo.numSubseq(
-                new int[]{14,4,6,6,20,8,5,6,8,12,6,10,14,9,17,16,9,7,14,11,14,15,13,11,10,18,13,17,17,14,17,7,9,5,10,13,8,5,18,20,7,5,5,15,19,14},
-                22
+        System.out.println(twentyTwo.longestCommonSubsequence(
+                "abcde","ace"
         ));
     }
 }
