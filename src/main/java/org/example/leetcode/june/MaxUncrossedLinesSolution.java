@@ -46,4 +46,45 @@ public class MaxUncrossedLinesSolution {
         return res;
     }
 
+    public int[][] getMemo() {
+        return memo;
+    }
+
+    public void setMemo(int[][] memo) {
+        this.memo = memo;
+    }
+
+    //    利用缓存的数组遍历
+    public void hitCache() {
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < memo.length; i++) {
+            for (int j = 0; j < memo[0].length; j++) {
+                memo[i][j] = 1;
+            }
+        }
+        long end = System.currentTimeMillis();
+        System.out.println("hitCache time = " + (end - start));
+    }
+//    未利用缓存的数组遍历
+    public void missCache() {
+        long start = System.currentTimeMillis();
+        for (int j = 0; j < memo[0].length; j++) {
+            for (int i = 0; i < memo.length; i++) {
+                memo[i][j] = 1;
+            }
+        }
+        long end = System.currentTimeMillis();
+        System.out.println("missCache time = " + (end - start));
+    }
+
+    public static void main(String[] args) {
+
+        MaxUncrossedLinesSolution solution = new MaxUncrossedLinesSolution();
+        solution.setMemo(new int[20000][10000]);
+//        统计两个方法的耗时
+        solution.hitCache();
+        solution.missCache();
+
+    }
+
 }
