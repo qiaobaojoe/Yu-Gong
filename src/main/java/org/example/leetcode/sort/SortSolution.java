@@ -78,6 +78,29 @@ public class SortSolution {
         nums[insertIndex] = target;
     }
 
+    public int[] bubbleSortArray(int[] nums) {
+        // 冒泡排序，每次遍历找到最大的元素，放到队尾，在遍历的过程中会发生交换
+        int n = nums.length;
+        if (n == 1) {
+            return nums;
+        }
+        // 冒牌排序，和选择排序相同的是，每次遍历找到最大的元素放到队尾
+        // 不同的是，冒泡排序一次遍历不会只交换一次数据，而是始终在交换，指针永远指向当前遍历数据
+        for (int i = n - 1; i > 0; i--) {
+            boolean noSwap = true;
+            for (int j = 0; j < i; j++) {
+                if (nums[j] > nums[j + 1]) {
+                    swap(nums, j, j + 1);
+                    noSwap = false;
+                }
+            }
+            if (noSwap) {
+                return nums;
+            }
+        }
+        return nums;
+    }
+
     public static void main(String[] args) {
         SortSolution solution = new SortSolution();
         solution.insertSortArray(new int[]{5, 1, 2, 3});
