@@ -78,4 +78,35 @@ public class Twelve {
         memo[day][hold] = res;
         return res;
     }
+
+    public int maxProfit2(int[] prices) {
+        int n = prices.length;
+        if (n == 1) {
+            return 0;
+        }
+
+        int[][] dp = new int[n][2];
+        // 记忆化搜索改造成递推的dp解决
+        // dp[n][1] 代表第n+1天持有股票 当期利润-入手价格
+        // dp[n][0] 代表第n+1天不持有骨片，当前利润
+        // 第一天，不持有股票，利润为0不用复制，持有股票
+        dp[0][1] = -prices[0];
+        // 第二天不持有股票，分为两种情况，第一种是昨天买入今天卖出，第二种是昨天也没有买入
+        dp[1][0] = Math.max(dp[0][1] + prices[1], dp[0][0]);
+        if (n == 2) {
+            return dp[n - 1][0];
+        }
+        // 第二天持有股票，分为两种情况，第一种是今天购买股票，第二种是昨天购买股票
+        dp[1][1] = Math.max(-prices[1], dp[0][1]);
+        for (int i = 2; i < n - 1; i++) {
+            // 今天不持有股票，分为两种情况，第一种是昨天还持有今天卖出，第二种是昨天也没有买入
+            dp[i][0] = Math.max(dp[i - 1][1] + prices[i], dp[i - 1][0]);
+            // 今天持有股票，分为三种情况，第一种是昨天已经持有，第二种是前天已经卖出
+            dp[i][1] = Math.max(dp[i - 1][1], dp[i - 2][0] - prices[i]);
+        }
+        dp[n - 1][0] = Math.max(dp[n - 2][1] + prices[n - 1], dp[n - 2][0]);
+
+
+        return dp[n - 1][0];
+    }
 }
