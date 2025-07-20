@@ -1,5 +1,7 @@
 package org.example.leetcode.july;
 
+import java.util.HashMap;
+
 /**
  * @author qiaobao
  * @since 2025/7/20
@@ -26,28 +28,31 @@ public class RobTreeNode {
     }
 
     public int rob(TreeNode root) {
-        // 普通打家劫舍的求当前状态和核心就是
-        // dp[i][1] 今天偷到  = dp[0][i-2] + nums[i]
-        // dp[i][0] = dp[i-1][1]
-        // ans = max(dp[i][1],dp[i][1])
-        // 这里有两个问题需要解决
-        // 动态方程的大小提起不能确定，因为二叉树的层级和节点都不能提前确定
-        // 遍历的路上不是线性迭代的，当前节点状态，可以会影响关联两个子节点的状态
-        // 很巧妙的递归，要理解这个并不容易
+        HashMap<TreeNode, Integer> memo = new HashMap<>();
+        return internalRob(root, memo);
+    }
+
+    private int internalRob(TreeNode root, HashMap<TreeNode, Integer> memo) {
         if (root == null) {
             return 0;
         }
-        int robCur = root.val;
+        if (memo.containsKey(root)) {
+            return memo.get(root);
+        }
+        // 当前节点抢劫
+        int robMoney = root.val;
+        // 孙子节点也要被抢劫
         if (root.left != null) {
-            robCur += rob(root.left.left);
-            robCur += rob(root.left.right);
+            robMoney += internalRob(root.left.left, memo);
+            robMoney += internalRob(root.left.right, memo);
         }
         if (root.right != null) {
-            robCur += rob(root.right.left);
-            robCur += rob(root.right.right);
+            robMoney += internalRob(root.right.left, memo);
+            robMoney += internalRob(root.right.right, memo);
         }
-
-        return Math.max(robCur, rob(root.left) + rob(root.right));
+        int ans = Math.max(robMoney, internalRob(root.left, memo) + internalRob(root.right, memo));
+        memo.put(root, ans);
+        return ans;
     }
 
     public static void main(String[] args) {
