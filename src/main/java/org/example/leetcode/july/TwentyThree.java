@@ -8,41 +8,36 @@ import java.util.Arrays;
  */
 public class TwentyThree {
 
-    private int[] coins;
-    private int[][] memo;
-
     public int change(int amount, int[] coins) {
         if (amount == 0) {
             return 1;
         }
-        // 上手很直接的递归写法
-        this.coins = coins;
-        this.memo = new int[coins.length][amount + 1];
-        for (int[] row : memo) {
-            Arrays.fill(row, -1);
-        }
+        // 迭代的方式  dp[i][j] = dp[i-coins[j]][j] + dp[i][j+1]
+        int[][] dp = new int[amount + 1][coins.length];
         // 这里要限定不能选 当前索引下标之前的硬币，避免相同数组，顺序不一致重复计数的问题
-        return dfs(amount, 0);
+        Arrays.fill(dp[0], 1);
+        for (int i = 1; i <= amount; i++) {
+            // 处理只能选择第一个硬币的情况
+            if (i % coins[0] == 0) {
+                dp[i][0] = 1;
+            } else {
+                dp[i][0] = 0;
+            }
+        }
+        for (int i = 1; i <= amount; i++) {
+            for (int j = 1; j < coins.length; j++) {
+                // j代表的是，硬币可以选择的范围 0 代表只能选择一个,就是coins[0]
+                // 硬币币值大于i,这个时候没得选 = 0
+                int res = 0;
+                res += dp[i][j - 1];
+                if (i >= coins[j]) {
+                    res += dp[i - coins[j]][j];
+                }
+                dp[i][j] = res;
+            }
+        }
+        return dp[amount][coins.length - 1];
 
-    }
-
-    private int dfs(int amount, int startIndex) {
-        if (amount < 0 || startIndex >= coins.length) {
-            return 0;
-        }
-        if (amount == 0) {
-            memo[startIndex][amount] = 1;
-            return 1;
-        }
-        if (memo[startIndex][amount] != -1) {
-            return memo[startIndex][amount];
-        }
-        int ans = 0;
-        // 考虑下一种迭代的思路，当前只存在选择 i 和不选择i的情况
-        ans += dfs(amount - coins[startIndex], startIndex);
-        ans += dfs(amount, startIndex + 1);
-        memo[startIndex][amount] = ans;
-        return ans;
     }
 
     public static void main(String[] args) {
