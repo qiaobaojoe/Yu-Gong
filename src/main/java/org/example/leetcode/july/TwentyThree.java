@@ -27,23 +27,20 @@ public class TwentyThree {
     }
 
     private int dfs(int amount, int startIndex) {
+        if (amount < 0 || startIndex >= coins.length) {
+            return 0;
+        }
+        if (amount == 0) {
+            memo[startIndex][amount] = 1;
+            return 1;
+        }
         if (memo[startIndex][amount] != -1) {
             return memo[startIndex][amount];
         }
-
         int ans = 0;
-        for (int i = startIndex; i < coins.length; i++) {
-            if (coins[i] > amount) {
-                // 硬币的币值超过当前今天，不能兑换
-                continue;
-            }
-            if (coins[i] == amount) {
-                // 币值相等，直接兑换
-                ans++;
-                continue;
-            }
-            ans += dfs(amount - coins[i], i);
-        }
+        // 考虑下一种迭代的思路，当前只存在选择 i 和不选择i的情况
+        ans += dfs(amount - coins[startIndex], startIndex);
+        ans += dfs(amount, startIndex + 1);
         memo[startIndex][amount] = ans;
         return ans;
     }
