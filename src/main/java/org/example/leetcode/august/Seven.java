@@ -13,21 +13,10 @@ public class Seven {
     private int[] memo;
 
     public int mincostTickets(int[] days, int[] costs) {
-        // 这里首先要把 costs 的几种情况确认了
-        // costs[0] * 7 > costs[1] 这个时候连续旅游天数较多的时候，就要考虑买 7 天的联票
-        // 但是多少天连续的时候，买联票呢
-        // 对于月票也是一样的问题，超过多少天购买下一等级的联票很难整理出来
-        this.costs = costs;
-        this.lastDay = days[days.length - 1];
-        int[] isTravelList = new int[lastDay + 1];
-        for (int d : days) {
-            isTravelList[d] = 1;
-        }
-        this.isTravelList = isTravelList;
-        int[] memo = new int[lastDay + 1];
-        Arrays.fill(memo, -1);
-        this.memo = memo;
-        return dfs(1);
+        // 这里迭代的方法我很难相处来，我应该怎样设计这个动态方程
+
+
+        return 1;
 
     }
 
@@ -53,5 +42,10 @@ public class Seven {
         res = Math.min(res, dfs(i + 30) + costs[2]);
         memo[i] = res;
         return res;
+    }
+
+    public static void main(String[] args) {
+        Seven seven = new Seven();
+        System.out.println(seven.mincostTickets(new int[]{1, 4, 6, 7, 8, 20}, new int[]{2, 7, 15}));
     }
 }
