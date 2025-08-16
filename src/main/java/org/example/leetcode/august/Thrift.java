@@ -42,9 +42,25 @@ public class Thrift {
         return dfs(n - pow, i - 1) + dfs(n, i - 1);
     }
 
+    public int maximum69Number (int num) {
+        // 从左向右遍历，找到第一个 6 将其反转
+        String str = String.valueOf(num);
+        char[] list = str.toCharArray();
+        for(int i = 0 ; i < list.length;i++){
+            if (list[i] == '6'){
+                list[i] = '9';
+                break;
+            }
+        }
+        return Integer.parseInt(String.valueOf(list));
+    }
+
     public static void main(String[] args) {
         Thrift thrift = new Thrift();
         System.out.println(thrift.numberOfWays(10, 2));
         System.out.println(thrift.numberOfWays(4, 1));
+        System.out.println(Integer.toBinaryString(Integer.MAX_VALUE));
+
+        int a = 0b111_1111_1111_1111_1111_1111_1111_1111;
     }
 }
